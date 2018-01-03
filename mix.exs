@@ -4,7 +4,7 @@ defmodule Bitflyex.Mixfile do
   def project do
     [
       app: :bitflyex,
-      version: "0.0.2",
+      version: "0.0.3",
       elixir: "~> 1.5",
 		description: "bitFlyer Lightning API libraries in Elixir", 
 		package: 
