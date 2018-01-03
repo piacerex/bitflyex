@@ -16,7 +16,7 @@ Add to your ```mix.exs``` file:
 ```elixir
 def deps do
   [
-    { :bitflyex, "~> 0.0.1" }
+    { :bitflyex, "~> 0.0.2" }
   ]
 end
 ```
