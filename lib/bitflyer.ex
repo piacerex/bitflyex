@@ -9,7 +9,7 @@ defmodule BitFlyer do
 	def domain(), do: "https://api.bitflyer.jp"
 
 	@doc """
-	Get balance from bitFlyer account
+	Get timestamp for bitFlyer
 
 	## Examples
 		iex> BitFlyer.timestamp |> String.length
@@ -34,19 +34,15 @@ defmodule BitFlyer do
 		 %{"amount" => 13.0, "available" => 13.0, "currency_code" => "LTC"},
 		 %{"amount" => 300.0, "available" => 300.0, "currency_code" => "MONA"}]
 	"""
-	def balance() do
-		domain() <> path_balance()
-		|> HTTPoison.get!( 
-			[ 
-				"ACCESS-KEY":       "#{ api_key() }", 
-				"ACCESS-TIMESTAMP": "#{ timestamp() }", 
-				"ACCESS-SIGN":      "#{ sign( path_balance() ) }", 
-			] )
-		|> Json.body
-		|> Poison.decode!
-		|> map_balance
-	end
+	def balance(), do: Json.call( domain(), path_balance(), path_header(), &map_balance/1 )
 	def path_balance(), do: "/v1/me/getbalance"
+	def path_header() do
+		[ 
+			"ACCESS-KEY":       "#{ api_key() }", 
+			"ACCESS-TIMESTAMP": "#{ timestamp() }", 
+			"ACCESS-SIGN":      "#{ sign( path_balance() ) }", 
+		]
+	end
 	def map_balance( map_list ) do
 		map_list
 		|> Enum.filter( fn %{ "currency_code" => currency_code } -> currency_code != "JPY" end )
@@ -59,13 +55,7 @@ defmodule BitFlyer do
 		iex> BitFlyer.markets
 		["BTC_JPY", "FX_BTC_JPY", "ETH_BTC", "BCH_BTC", "BTCJPY05JAN2018", "BTCJPY12JAN2018"]
 	"""
-	def markets() do
-		domain() <> path_markets()
-		|> HTTPoison.get!()
-		|> Json.body
-		|> Poison.decode!
-		|> map_markets
-	end
+	def markets(), do: Json.call( domain(), path_markets(), [], &map_markets/1 )
 	def path_markets(), do: "/v1/markets"
 	def map_markets( map_list ) do
 		map_list

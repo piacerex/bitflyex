@@ -4,14 +4,14 @@ defmodule Bitflyex.Mixfile do
   def project do
     [
       app: :bitflyex,
-      version: "0.0.3",
+      version: "0.0.4",
       elixir: "~> 1.5",
 		description: "bitFlyer Lightning API libraries in Elixir", 
 		package: 
 		[
 			maintainers: [ "data-maestro" ], 
 			licenses:    [ "MIT" ], 
-			links:       %{ "GitHub" => "https://github.com/data-maestro/bitflyex" }, 
+			links:       %{ "GitHub" => "https://github.com/piacere-ex/bitflyex" }, 
 		],
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -34,9 +34,7 @@ defmodule Bitflyex.Mixfile do
 			{ :mix_test_watch,      "~> 0.5.0",  only: :dev, runtime: false }, 
 			{ :dialyxir,            "~> 0.5.1",  only: :dev }, 
 
-			{ :httpoison,           "~> 0.13.0" }, 
-			{ :poison,              "~> 3.1.0" }, 
-			{ :timex,               "~> 3.1.24" }, 
+			{ :smallex,             "~> 0.0.3" }, 
 		]
 	end
 end
