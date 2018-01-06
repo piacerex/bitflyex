@@ -3,11 +3,11 @@
 [Bitflyex](https://hex.pm/packages/bitflyex) is a bitFlyer Lightning API libraries in Elixir. Here is an example:
 
 ```elixir
-iex> BitFlyer.markets
+iex> BitFlyex.markets
 ["BTC_JPY", "FX_BTC_JPY", "ETH_BTC", "BCH_BTC", "BTCJPY05JAN2018",
  "BTCJPY12JAN2018"]
 
-iex> BitFlyer.balance
+iex> BitFlyex.balance
 [%{"amount" => 0.6, "available" => 0.6, "currency_code" => "BTC"},
  %{"amount" => 1.0, "available" => 1.0, "currency_code" => "BCH"},
  %{"amount" => 12.0, "available" => 12.0, "currency_code" => "ETH"},
@@ -25,10 +25,10 @@ Add to your ```mix.exs``` file:
 ```elixir
 def deps do
   [
-    { :bitflyex, "~> 0.0.4" }
+    { :bitflyex, "~> 0.0.5" }
   ]
 end
 ```
 
 ## License
-This project is licensed under the terms of the MIT license, see LICENSE.
+This project is licensed under the terms of the Apache 2.0 license, see LICENSE.

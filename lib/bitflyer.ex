@@ -1,22 +1,15 @@
-defmodule BitFlyer do
+defmodule BitFlyex do
 	@moduledoc """
 	Documentation for BitFlyer.
 	"""
 
-	def api_key(), do: ""
-	def secret(),  do: ""
+	defp api_key(), do: ""
+	defp secret(),  do: ""
 
-	def domain(), do: "https://api.bitflyer.jp"
+	defp domain(), do: "https://api.bitflyer.jp"
 
-	@doc """
-	Get timestamp for bitFlyer
-
-	## Examples
-		iex> BitFlyer.timestamp |> String.length
-		22
-	"""
-	def timestamp(), do: Dt.now_timestamp( "-", "T", ":", "." ) |> String.slice( 0, 22 )
-	def sign( path, body \\ "" ) do
+	defp timestamp(), do: Dt.now_timestamp( "-", "T", ":", "." ) |> String.slice( 0, 22 )
+	defp sign( path, body \\ "" ) do
 		:crypto.hmac( :sha256, secret(), timestamp() <> "GET" <> path <> body ) 
 		|> Base.encode16 
 		|> String.downcase 
@@ -26,7 +19,7 @@ defmodule BitFlyer do
 	Get balance from bitFlyer account
 
 	## Examples
-		iex> BitFlyer.balance
+		iex> BitFlyex.balance
 		[%{"amount" => 0.6, "available" => 0.6, "currency_code" => "BTC"},
 		 %{"amount" => 1.0, "available" => 1.0, "currency_code" => "BCH"},
 		 %{"amount" => 12.0, "available" => 12.0, "currency_code" => "ETH"},
@@ -34,7 +27,7 @@ defmodule BitFlyer do
 		 %{"amount" => 13.0, "available" => 13.0, "currency_code" => "LTC"},
 		 %{"amount" => 300.0, "available" => 300.0, "currency_code" => "MONA"}]
 	"""
-	def balance(), do: Json.call( domain(), path_balance(), path_header(), &map_balance/1 )
+	def balance(), do: Json.get( domain(), path_balance(), path_header(), &map_balance/1 )
 	def path_balance(), do: "/v1/me/getbalance"
 	def path_header() do
 		[ 
@@ -52,10 +45,10 @@ defmodule BitFlyer do
 	Get market products from bitFlyer
 
 	## Examples
-		iex> BitFlyer.markets
+		iex> BitFlyex.markets
 		["BTC_JPY", "FX_BTC_JPY", "ETH_BTC", "BCH_BTC", "BTCJPY05JAN2018", "BTCJPY12JAN2018"]
 	"""
-	def markets(), do: Json.call( domain(), path_markets(), [], &map_markets/1 )
+	def markets(), do: Json.get( domain(), path_markets(), [], &map_markets/1 )
 	def path_markets(), do: "/v1/markets"
 	def map_markets( map_list ) do
 		map_list
