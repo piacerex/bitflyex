@@ -4,9 +4,9 @@ defmodule Bitflyex.Mixfile do
   def project do
     [
       app: :bitflyex,
-      version: "0.0.6",
+      version: "0.0.7",
       elixir: "~> 1.5",
-		description: "bitFlyer Lightning API libraries in Elixir", 
+		description: "bitFlyer Lightning API library in Elixir", 
 		package: 
 		[
 			maintainers: [ "data-maestro" ], 
@@ -34,7 +34,7 @@ defmodule Bitflyex.Mixfile do
 			{ :mix_test_watch,      "~> 0.5.0",  only: :dev, runtime: false }, 
 			{ :dialyxir,            "~> 0.5.1",  only: :dev }, 
 
-			{ :smallex,             "~> 0.0.8" }, 
+			{ :smallex,             "~> 0.0.9" }, 
 		]
 	end
 end

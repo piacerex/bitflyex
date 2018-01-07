@@ -1,10 +1,10 @@
 defmodule BitFlyex do
 	@moduledoc """
-	Documentation for BitFlyer.
+	bitFlyer Lightning API library.
 	"""
 
-	defp api_key(), do: ""
-	defp secret(),  do: ""
+	defp api_key(), do: Application.get_env( :bitflyex, :setting ) |> Poison.decode! |> Map.get( "api_key" )
+	defp secret(),  do: Application.get_env( :bitflyex, :setting ) |> Poison.decode! |> Map.get( "secret" )
 
 	defp domain(), do: "https://api.bitflyer.jp"
 
