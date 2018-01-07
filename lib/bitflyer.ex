@@ -8,7 +8,14 @@ defmodule BitFlyex do
 
 	defp domain(), do: "https://api.bitflyer.jp"
 
-	defp timestamp(), do: Dt.now_timestamp( "-", "T", ":", "." ) |> String.slice( 0, 22 )
+	@doc """
+	Get timestamp (this test for balance() test. Don't remove)
+
+	## Examples
+		iex> BitFlyex.timestamp |> String.length
+		22
+	"""
+	def timestamp(), do: Dt.now_timestamp( "-", "T", ":", "." ) |> String.slice( 0, 22 )
 	defp sign( path, body \\ "" ) do
 		:crypto.hmac( :sha256, secret(), timestamp() <> "GET" <> path <> body ) 
 		|> Base.encode16 
@@ -28,15 +35,15 @@ defmodule BitFlyex do
 		 %{"amount" => 300.0, "available" => 300.0, "currency_code" => "MONA"}]
 	"""
 	def balance(), do: Json.get( domain(), path_balance(), path_header(), &map_balance/1 )
-	def path_balance(), do: "/v1/me/getbalance"
-	def path_header() do
+	defp path_balance(), do: "/v1/me/getbalance"	# This path don't refactoring ('v1' use signature)
+	defp path_header() do
 		[ 
 			"ACCESS-KEY":       "#{ api_key() }", 
 			"ACCESS-TIMESTAMP": "#{ timestamp() }", 
 			"ACCESS-SIGN":      "#{ sign( path_balance() ) }", 
 		]
 	end
-	def map_balance( map_list ) do
+	defp map_balance( map_list ) do
 		map_list
 		|> Enum.filter( fn %{ "currency_code" => currency_code } -> currency_code != "JPY" end )
 	end
@@ -46,11 +53,11 @@ defmodule BitFlyex do
 
 	## Examples
 		iex> BitFlyex.markets
-		["BTC_JPY", "FX_BTC_JPY", "ETH_BTC", "BCH_BTC", "BTCJPY05JAN2018", "BTCJPY12JAN2018"]
+		["BTC_JPY", "FX_BTC_JPY", "ETH_BTC", "BCH_BTC", "BTCJPY12JAN2018", "BTCJPY19JAN2018"]
 	"""
 	def markets(), do: Json.get( domain(), path_markets(), [], &map_markets/1 )
-	def path_markets(), do: "/v1/markets"
-	def map_markets( map_list ) do
+	defp path_markets(), do: "/v1/markets"	# This path don't refactoring ('v1' use signature)
+	defp map_markets( map_list ) do
 		map_list
 		|> Enum.map( fn %{ "product_code" => product_code } -> product_code end )
 	end
