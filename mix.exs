@@ -4,12 +4,12 @@ defmodule Bitflyex.Mixfile do
   def project do
     [
       app: :bitflyex,
-      version: "0.0.7",
+      version: "0.1.0",
       elixir: "~> 1.5",
 		description: "bitFlyer Lightning API library in Elixir", 
 		package: 
 		[
-			maintainers: [ "data-maestro" ], 
+			maintainers: [ "piacere-ex" ], 
 			licenses:    [ "Apache 2.0" ], 
 			links:       %{ "GitHub" => "https://github.com/piacere-ex/bitflyex" }, 
 		],
