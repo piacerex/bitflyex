@@ -3,18 +3,14 @@ defmodule BitFlyex do
 	bitFlyer Lightning API library.
 	"""
 
+	defp domain(), do: "https://api.bitflyer.jp"
+
 	defp api_key(), do: Application.get_env( :bitflyex, :setting ) |> Poison.decode! |> Map.get( "api_key" )
 	defp secret(),  do: Application.get_env( :bitflyex, :setting ) |> Poison.decode! |> Map.get( "secret" )
 
-	defp domain(), do: "https://api.bitflyer.jp"
+	defp to_side(  1 ), do: "BUY"
+	defp to_side( -1 ), do: "SELL"
 
-	@doc """
-	Get timestamp (this test for balance() test. Don't remove)
-
-	## Examples
-		iex> BitFlyex.timestamp |> String.length
-		22
-	"""
 	def timestamp(), do: Dt.now_timestamp( "-", "T", ":", "." ) |> String.slice( 0, 22 )
 	defp sign( method, path, body \\ "" ) do
 		:crypto.hmac( :sha256, secret(), timestamp() <> method <> path <> body ) 
@@ -22,15 +18,14 @@ defmodule BitFlyex do
 		|> String.downcase 
 	end
 
-	@doc """
-	List account balance
-
-	## Examples
-		iex> BitFlyex.balance |> is_list
-		true
-	"""
-	def balance(), do: Json.get( domain(), path_balance(), private_header( path_balance() ), &map_balance/1 )
-	defp path_balance(), do: "/v1/me/getbalance"	# This path don't refactoring ('v1' use signature)
+	defp private_post_header( path, body ) do
+		[ 
+			"ACCESS-KEY":       "#{ api_key() }", 
+			"ACCESS-TIMESTAMP": "#{ timestamp() }", 
+			"ACCESS-SIGN":      "#{ sign( "POST", path, body ) }", 
+			"Content-type":     "application/json", 
+		]
+	end
 	defp private_header( path ) do
 		[ 
 			"ACCESS-KEY":       "#{ api_key() }", 
@@ -38,10 +33,6 @@ defmodule BitFlyex do
 			"ACCESS-SIGN":      "#{ sign( "GET", path ) }", 
 			"Content-type":     "application/json", 
 		]
-	end
-	defp map_balance( map_list ) do
-		map_list
-		|> Enum.filter( fn %{ "currency_code" => currency_code } -> currency_code != "JPY" end )
 	end
 
 	@doc """
@@ -92,7 +83,7 @@ defmodule BitFlyex do
 	defp params_executions( product_code ), do: "?count=1000&product_code=#{product_code}"
 
 	@doc """
-	List permisions
+	Get permisions
 
 	## Examples
 		iex> BitFlyex.get_permisions |> is_list
@@ -100,6 +91,20 @@ defmodule BitFlyex do
 	"""
 	def get_permisions(), do: Json.get( domain(), path_get_permisions(), private_header( path_get_permisions() ) )
 	defp path_get_permisions(), do: "/v1/me/getpermissions"	# This path don't refactoring ('v1' use signature)
+
+	@doc """
+	List account balance
+
+	## Examples
+		iex> BitFlyex.balance |> is_list
+		true
+	"""
+	def balance(), do: Json.get( domain(), path_balance(), private_header( path_balance() ), &map_balance/1 )
+	defp path_balance(), do: "/v1/me/getbalance"	# This path don't refactoring ('v1' use signature)
+	defp map_balance( map_list ) do
+		map_list
+		|> Enum.filter( fn %{ "currency_code" => currency_code } -> currency_code != "JPY" end )
+	end
 
 	@doc """
 	Get collateral
@@ -239,16 +244,5 @@ defmodule BitFlyex do
 			"\"minute_to_expire\":   #{minute_to_expire}, "   <> 
 			"\"time_in_force\":    \"#{time_in_force}\""      <> 
 		"}"
-	end
-	defp to_side(  1 ), do: "BUY"
-	defp to_side( -1 ), do: "SELL"
-
-	defp private_post_header( path, body ) do
-		[ 
-			"ACCESS-KEY":       "#{ api_key() }", 
-			"ACCESS-TIMESTAMP": "#{ timestamp() }", 
-			"ACCESS-SIGN":      "#{ sign( "POST", path, body ) }", 
-			"Content-type":     "application/json", 
-		]
 	end
 end
